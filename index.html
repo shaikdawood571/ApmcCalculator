@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APMC Calculator</title>
+</head>
+<body>
+    <p>APMC Calculator calculates Paddy Sold amount easily!</p>
+
+    <label for="totalBags">Total Bags</label>
+    <input id="totalBags" type="number" placeholder="Enter Total Bags"><br>
+
+    <label for="netWeight">Net Weight</label>
+    <input id="netWeight" type="number" placeholder="Enter Net Weight"><br>
+
+    <label for="price">Price</label>
+    <input id="price" type="number" placeholder="Enter Price per Bag"><br>
+
+    <label for="myDropdown">Soot</label>
+    <select name="myDropdown" id="myDropdown">
+    <active>Choose required Soot</option>
+        <option value="1">0</option>
+        <option value="2">1</option>
+        <option value="3">1.5</option>
+        <option value="4">2</option>
+        <option value="5">2.5</option>
+        <option value="6">3</option>
+        <option value="7">3.5</option>
+        <option value="8">4</option>
+        <option value="9">4.5</option>
+        <option value="10">5</option>
+    </select>
+
+    <button onclick="calculateAmount()">Submit</button>
+
+    <button onclick="clearFields()">Clear</button>
+
+    <h3 id="Heading"></h3>
+    <p id="NetAmount"></p>
+    <p id="message"></p>
+
+    <script src="app.js"></script>
+</body>
+</html>
