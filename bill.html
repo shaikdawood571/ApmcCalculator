@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>APMC Invoice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 15px;
+    }
+
+    .invoice-box {
+      background: white;
+      max-width: 800px;
+      margin: auto;
+      padding: 25px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e86de;
+      margin-bottom: 25px;
+      font-size: 22px;
+    }
+
+    .invoice-details p {
+      margin: 8px 0;
+      font-size: 15px;
+      color: #333;
+    }
+
+    .total {
+      font-size: 17px;
+      font-weight: bold;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 2px solid #444;
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .buttons button {
+      background-color: #2e86de;
+      color: white;
+      font-size: 15px;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px 5px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 90%;
+      max-width: 250px;
+    }
+
+    .buttons button:hover {
+      background-color: #1b4f72;
+    }
+
+    @media print {
+      .buttons {
+        display: none;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .invoice-box {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .invoice-details p {
+        font-size: 14px;
+      }
+
+      .buttons button {
+        font-size: 14px;
+        padding: 10px;
+        width: 100%;
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box" id="invoice">
+    <h2>APMC Paddy Sale Invoice</h2>
+    <div class="invoice-details" id="bill-content">
+      <!-- Invoice content will be injected via JavaScript -->
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="downloadPDF()">Download PDF</button>
+    <button onclick="window.print()">Print</button>
+    <button onclick="goHome()">Back to Home</button>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const totalBags = params.get('bags') || 'N/A';
+    const netWeight = params.get('weight') || 'N/A';
+    const price = params.get('price') || 'N/A';
+    const soot = params.get('soot') || 'N/A';
+    const amount = params.get('amount') || '0.00';
+    const customerName = params.get('name') || 'N/A';
+    const customerContact = params.get('contact') || 'N/A';
+    const customerAddress = params.get('address') || 'N/A';
+
+    const content = `
+      <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+      <hr>
+      <p><strong>Customer Name:</strong> ${customerName}</p>
+      <p><strong>Contact:</strong> ${customerContact}</p>
+      <p><strong>Address:</strong> ${customerAddress}</p>
+      <hr>
+      <p><strong>Total Bags:</strong> ${totalBags}</p>
+      <p><strong>Net Weight:</strong> ${netWeight} kg</p>
+      <p><strong>Price per Bag:</strong> ₹${price}</p>
+      <p><strong>Soot Deduction:</strong> ${soot}</p>
+      <p class="total"><strong>Net Amount:</strong> ₹${amount}</p>
+    `;
+
+    document.getElementById("bill-content").innerHTML = content;
+
+    function downloadPDF() {
+      const element = document.getElementById("invoice");
+      html2pdf().from(element).set({
+        margin: 10,
+        filename: "APMC_Invoice.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+      }).save();
+    }
+
+    function goHome() {
+      if (window.opener) {
+        window.close();
+      } else {
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+</body>
+</html>
