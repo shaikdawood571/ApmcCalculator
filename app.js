@@ -62,6 +62,8 @@ function generateBill() {
 
   const finalAmount = calculatedAmount - weighBridge - laborCharges;
 
+  const invoiceNumber = "INV-" + Date.now();
+
   // ✅ Calculate weight per bag safely
   let weightPerBag = 0;
   if (parseFloat(bags) > 0 && !isNaN(parseFloat(weight))) {
@@ -73,5 +75,12 @@ function generateBill() {
   window.open(url, "_blank", "width=800,height=600");
 }
 
+function generateInvoiceNumber() {
+  const now = new Date();
+  return 'INV-' + now.getFullYear() +
+         (now.getMonth() + 1).toString().padStart(2, '0') +
+         now.getDate().toString().padStart(2, '0') +
+         '-' + Math.floor(1000 + Math.random() * 9000); // e.g., INV-20250801-4821
+}
 
 
