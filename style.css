@@ -1,5 +1,5 @@
 :root {
-  --primary: #09529c;
+  --primary: #145698;
   --hover: #1b4f72;
 }
 
@@ -121,3 +121,40 @@ input:focus, select:focus {
     display: none;
   }
 }
+
+body {
+  position: relative;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.fancy-note {
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: bold;
+  color: #cb462f;
+  white-space: nowrap;
+  position: absolute;
+  top: 20px; /* Show at top */
+  left: -100%;
+  animation: slide3DSlow 50s linear infinite;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+@keyframes slide3DSlow {
+  0% {
+    left: -100%;
+    transform: rotateY(0deg);
+  }
+  50% {
+    left: 50%;
+    transform: rotateY(10deg);
+  }
+  100% {
+    left: 100%;
+    transform: rotateY(0deg);
+  }
+}
+
+
+
