@@ -163,30 +163,41 @@
       }
     }
 
-    function shareInvoice() {
-      const shareData = {
-        title: 'APMC Paddy Sale Invoice',
-        text: 'Here is the invoice for your APMC Paddy Sale.',
-        url: window.location.href
-      };
+  async function shareInvoice() {
+    const invoiceElement = document.getElementById('invoice');
 
-      if (navigator.share) {
-        navigator.share(shareData)
-          .then(() => alert('Invoice shared successfully!'))
-          .catch((err) => {
-            console.error('Share failed:', err);
-            alert('Sharing failed. Try copying the link instead.');
-          });
-      } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(window.location.href)
-          .then(() => alert('Invoice link copied to clipboard!'))
-          .catch(err => {
-            console.error('Clipboard write failed:', err);
-            alert('Copy to clipboard failed.');
-          });
+    // Better PDF options
+    const opt = {
+      margin:       [0.5, 0.5, 0.5, 0.5], // top, left, bottom, right (inches)
+      filename:     'invoice.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    try {
+      const pdfBlob = await html2pdf().set(opt).from(invoiceElement).outputPdf('blob');
+      const pdfFile = new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
+
+      if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+        await navigator.share({
+          files: [pdfFile],
+          title: 'APMC Paddy Sale Invoice',
+          text: 'Attached is the full invoice from FarmTech.'
+        });
+        alert('Invoice shared successfully!');
       } else {
-        alert('Sharing not supported on this browser.');
+        // Fallback to download
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(pdfBlob);
+        link.download = 'invoice.pdf';
+        link.click();
+        alert('Sharing not supported. PDF downloaded instead.');
       }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while generating or sharing the PDF.');
     }
   </script>
 
