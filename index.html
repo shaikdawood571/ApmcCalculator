@@ -34,19 +34,19 @@
         </div>
 
         <div class="mb-3">
-          <label for="myDropdown" class="form-label">Soot Deduction</label>
+          <label for="myDropdown" class="form-label">Soot Deduction (kg)</label>
           <select class="form-select" id="myDropdown">
             <option value="">-- Select Soot --</option>
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="1.5">1.5</option>
-            <option value="2">2</option>
-            <option value="2.5">2.5</option>
-            <option value="3">3</option>
-            <option value="3.5">3.5</option>
-            <option value="4">4</option>
-            <option value="4.5">4.5</option>
-            <option value="5">5</option>
+            <option value="0">0 kg</option>
+            <option value="1">1 kg</option>
+            <option value="1.5">1.5 kg</option>
+            <option value="2">2 kg</option>
+            <option value="2.5">2.5 kg</option>
+            <option value="3">3 kg</option>
+            <option value="3.5">3.5 kg</option>
+            <option value="4">4 kg</option>
+            <option value="4.5">4.5 kg</option>
+            <option value="5">5 kg</option>
           </select>
         </div>
 
@@ -77,6 +77,16 @@
             <input type="text" class="form-control" id="customerAddress" placeholder="Enter address (optional)">
           </div>
 
+          <div class="mb-3">
+            <label for="ProductType" class="form-label">Product Type</label>
+            <input type="text" class="form-control" id="ProductType" placeholder="Enter Product Type (optional)">
+          </div>
+
+          <div class="mb-3">
+            <label for="Enterprise" class="form-label">Enterprise Name</label>
+            <input type="text" class="form-control" id="Enterprise" placeholder="Enter Enterprise (optional)">
+          </div>
+              
           <div class="mb-3">
           <label for="weighBridge" class="form-label">Weigh Bridge Amount (optional)</label>
           <input type="number" class="form-control" id="weighBridge" placeholder="e.g. 100">
@@ -133,38 +143,51 @@
       document.getElementById("NetAmount").textContent = "0";
     }
 
-    function generateBill() {
-  const bags = document.getElementById("totalBags").value.trim();
-  const weight = document.getElementById("netWeight").value.trim();
-  const price = document.getElementById("price").value.trim();
-  const soot = document.getElementById("myDropdown").value.trim();
-  const name = document.getElementById("customerName").value.trim();
-  const contact = document.getElementById("customerContact").value.trim();
-  const address = document.getElementById("customerAddress").value.trim();
-  const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent);
+  function generateBill() {
+    const bags = document.getElementById("totalBags").value.trim();
+    const weight = document.getElementById("netWeight").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const soot = document.getElementById("myDropdown").value.trim();
+    const name = document.getElementById("customerName").value.trim();
+    const contact = document.getElementById("customerContact").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
+    const ProductType = document.getElementById("ProductType").value.trim();
+    const Enterprise = document.getElementById("Enterprise").value.trim();
+    const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent);
+    const weighBridge = parseFloat(document.getElementById("weighBridge").value) || 0;
+    const laborCharges = parseFloat(document.getElementById("laborCharges").value) || 0;
 
-  const weighBridge = parseFloat(document.getElementById("weighBridge").value) || 0;
-  const laborCharges = parseFloat(document.getElementById("laborCharges").value) || 0;
+    if (!bags || !weight || !price || !soot) {
+      alert("Please enter all product details before generating the bill.");
+      return;
+    }
 
-  if (!bags || !weight || !price || !soot) {
-    alert("Please enter all product details before generating the bill.");
-    return;
+    const finalAmount = calculatedAmount - weighBridge - laborCharges;
+
+    // ✅ Calculate weight per bag safely
+    let weightPerBag = 0;
+    if (parseFloat(bags) > 0 && !isNaN(parseFloat(weight))) {
+      weightPerBag = parseFloat(weight) / parseFloat(bags);
+    }
+
+    // ✅ Include weightPerBag (wpb) in the URL
+    const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weigh=${encodeURIComponent(weighBridge)}&labor=${encodeURIComponent(laborCharges)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}`;
+    window.open(url, "_blank", "width=800,height=600");
   }
-
-  const finalAmount = calculatedAmount - weighBridge - laborCharges;
-
-  // ✅ Calculate weight per bag safely
-  let weightPerBag = 0;
-  if (parseFloat(bags) > 0 && !isNaN(parseFloat(weight))) {
-    weightPerBag = parseFloat(weight) / parseFloat(bags);
-  }
-
-  // ✅ Include weightPerBag (wpb) in the URL
-  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&address=${encodeURIComponent(address)}&weigh=${encodeURIComponent(weighBridge)}&labor=${encodeURIComponent(laborCharges)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}`;
-  window.open(url, "_blank", "width=800,height=600");
-}
 
   </script>
+
+  <footer style="text-align: center; padding: 12px; margin-top: 40px; font-size: 14px; color: #555;"> 
+    <img src="farmtech.png" alt="FarmTech Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;">
+    © 2025 <strong>FarmTech Solutions</strong>
+
+    <div style="display: flex; gap: 30px;"></div>
+    <a href="Company.html" target="_blank" style="color: blue; text-decoration: none;">
+      Visit Our Site
+    </a>
+    </div>  
+
+  </footer>
 
 </body>
 </html>
