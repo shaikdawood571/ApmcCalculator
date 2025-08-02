@@ -50,6 +50,7 @@ function generateBill() {
   const name = document.getElementById("customerName").value.trim();
   const contact = document.getElementById("customerContact").value.trim();
   const address = document.getElementById("customerAddress").value.trim();
+  const ProductType = document.getElementById("ProductType").value.trim();
   const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent) || 0;
 
   const weighBridge = parseFloat(document.getElementById("weighBridge").value) || 0;
@@ -71,7 +72,7 @@ function generateBill() {
   }
 
   // ✅ Include weightPerBag (wpb) in the URL
-  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&address=${encodeURIComponent(address)}&weigh=${encodeURIComponent(weighBridge)}&labor=${encodeURIComponent(laborCharges)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}`;
+  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weigh=${encodeURIComponent(weighBridge)}&labor=${encodeURIComponent(laborCharges)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}`;
   window.open(url, "_blank", "width=800,height=600");
 }
 
