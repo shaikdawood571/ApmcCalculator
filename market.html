@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Paddy Market Rates</title>
+  <link rel="icon" href="farmtech.png" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f0f0f0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #2e7d32;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    th {
+      background-color: #c8e6c9;
+    }
+
+    button {
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 10px 5px 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    .form-container {
+      display: none;
+      background: #f1f8e9;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      position: relative;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    input[type="text"], input[type="number"] {
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .variety-entry {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+
+    .variety-entry input {
+      flex: 1;
+    }
+
+    .remove-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      background: #b71c1c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="location.href='index.html'">← Back to Home</button>
+    <h1>🌾 Paddy Market Rates & Traders</h1>
+    <p id="lastUpdated" style="text-align:right; font-size:14px; color:gray; margin-top:10px;"></p>
+    <button onclick="loadApprovedBuyers()">🔄</button> 
+    <h2>Current Buyers</h2>
+    
+  
+    <table id="rateTable">
+      <thead>
+        <tr>
+          <th>Trader Name</th>
+          <th>Contact</th>
+          <th>Location</th>
+          <th>Varieties & Prices</th>
+        </tr>
+      </thead>
+      <tbody id="rateBody"></tbody>
+    </table>
+
+    <div style="background-color: #fffde7; border-left: 6px solid #fbc02d; padding: 16px; margin-top: 40px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); font-size: 18px; color: #555;">
+      💼 <strong>Want to Trade?</strong> Submit your interest below to become a <strong>verified trader</strong>. Our team will review and approve genuine submissions.
+    </div>
+
+    <button onclick="toggleForm()">+ Add New Trader</button>
+
+    <div id="buyerFormContainer" class="form-container">
+      <button class="close-btn" onclick="toggleForm()">X</button>
+      <h2>Add Buyer Information</h2>
+      <form id="buyerForm">
+        <div class="form-group">
+          <input type="text" id="name" placeholder="Buyer Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="contact" placeholder="Contact" required />
+        </div>
+        <div class="form-group">
+          <input type="text" id="location" placeholder="Location" required />
+        </div>
+
+        <label><strong>Interested Varieties:</strong></label>
+        <div id="varietyContainer">
+          <div class="variety-entry">
+            <input type="text" placeholder="Variety (e.g., IR64)" class="variety-name" required />
+            <input type="number" placeholder="Price (₹)" class="variety-price" required />
+          </div>
+        </div>
+
+        <button type="button" onclick="addVariety()">+ Add Variety</button>
+        <button type="submit">Submit for Approval</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function loadApprovedBuyers() {
+      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
+      const rateBody = document.getElementById("rateBody");
+      rateBody.innerHTML = "";
+
+      const approved = buyers.filter(b => b.approved);
+
+      if (approved.length === 0) {
+        rateBody.innerHTML = "<tr><td colspan='4'>No approved buyers yet.</td></tr>";
+        return;
+      }
+
+      approved.forEach(buyer => {
+        const varieties = (buyer.paddyList || []).map(p => `${p.variety}: ₹${p.price}`).join('<br>');
+        const row = `
+          <tr>
+            <td>${buyer.name}</td>
+            <td><a href="tel:${buyer.contact}">${buyer.contact}</a></td>
+            <td>${buyer.location}</td>
+            <td>${varieties}</td>
+          </tr>
+        `;
+        rateBody.innerHTML += row;
+      });
+    }
+
+    function addVariety() {
+      const container = document.getElementById("varietyContainer");
+      const entry = document.createElement("div");
+      entry.className = "variety-entry";
+      entry.innerHTML = `
+        <input type="text" placeholder="Variety" class="variety-name" required />
+        <input type="number" placeholder="Price (₹)" class="variety-price" required />
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove()">❌</button>
+      `;
+      container.appendChild(entry);
+    }
+
+    function toggleForm() {
+      const form = document.getElementById("buyerFormContainer");
+      form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
+    }
+
+    document.getElementById("buyerForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+      const location = document.getElementById("location").value.trim();
+
+      const varietyNames = document.querySelectorAll(".variety-name");
+      const varietyPrices = document.querySelectorAll(".variety-price");
+
+      const paddyList = [];
+
+      for (let i = 0; i < varietyNames.length; i++) {
+        const variety = varietyNames[i].value.trim();
+        const price = parseFloat(varietyPrices[i].value.trim());
+
+        if (variety && !isNaN(price)) {
+          paddyList.push({ variety, price });
+        }
+      }
+
+      if (paddyList.length === 0) {
+        alert("Please add at least one paddy variety with price.");
+        return;
+      }
+
+      const newBuyer = {
+        name,
+        contact,
+        location,
+        paddyList,
+        approved: false
+      };
+
+      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
+      buyers.push(newBuyer);
+      localStorage.setItem("buyers", JSON.stringify(buyers));
+
+      alert("Buyer info submitted for admin approval.");
+      this.reset();
+      document.getElementById("varietyContainer").innerHTML = `
+        <div class="variety-entry">
+          <input type="text" placeholder="Variety" class="variety-name" required />
+          <input type="number" placeholder="Price (₹)" class="variety-price" required />
+        </div>
+      `;
+      toggleForm();
+    });
+
+function setTodayDate() {
+  const now = new Date();
+  const options = { year: 'numeric', month: 'short', day: 'numeric' };
+  const dateStr = now.toLocaleDateString('en-IN', options);
+  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+  document.getElementById('lastUpdated').textContent = `📅 Last updated: ${dateStr}, ${timeStr}`;
+}
+
+  window.onload = function () {
+  loadApprovedBuyers();  // Load approved traders
+  setTodayDate();        // Set today's date on the page
+};
+
+  </script>
+</body>
+</html>
