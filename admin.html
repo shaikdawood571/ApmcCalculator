@@ -1,0 +1,232 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login - Paddy Market</title>
+  <link rel="icon" href="farmtech.png" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --light: #f1f8e9;
+      --accent: #c8e6c9;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--light);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      position: relative;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-top: 30px;
+      font-size: 30px;
+    }
+
+    #loginSection, #panelSection {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+
+    #loginForm {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    #loginForm input {
+      padding: 10px;
+      width: 250px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    #loginForm button {
+      padding: 10px 20px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: var(--accent);
+    }
+
+    .actions button {
+      margin: 0 4px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .approve {
+      background-color: #388e3c;
+      color: white;
+    }
+
+    .reject {
+      background-color: #c62828;
+      color: white;
+    }
+
+    .back-home {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #ccc;
+      padding: 8px 16px;
+      border-radius: 5px;
+      text-decoration: none;
+      color: #000;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    #noData {
+      padding: 20px;
+      text-align: center;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-home">← Back to Home</a>
+
+    <h1>🔐 Admin Access - Paddy Market</h1>
+
+    <!-- Login Screen -->
+    <div id="loginSection">
+      <form id="loginForm">
+        <input type="password" id="adminPassword" placeholder="Enter Admin Password" required />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="panelSection" style="display: none;">
+      <h2>✅ Buyer Approval Panel</h2>
+
+      <table id="adminTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Location</th>
+            <th>Paddy Varieties</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <div id="noData" style="display: none;">No buyer entries available.</div>
+    </div>
+  </div>
+
+  <script>
+    const CORRECT_PASSWORD = "admin123"; // 🔒 Change as needed
+
+    const loginForm = document.getElementById("loginForm");
+    const loginSection = document.getElementById("loginSection");
+    const panelSection = document.getElementById("panelSection");
+
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const password = document.getElementById("adminPassword").value;
+      if (password === CORRECT_PASSWORD) {
+        loginSection.style.display = "none";
+        panelSection.style.display = "block";
+        loadBuyers();
+      } else {
+        alert("Incorrect password. Try again.");
+      }
+    });
+
+    function loadBuyers() {
+      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
+      const tbody = document.querySelector("#adminTable tbody");
+      const noData = document.getElementById("noData");
+
+      tbody.innerHTML = "";
+
+      if (buyers.length === 0) {
+        noData.style.display = "block";
+        return;
+      } else {
+        noData.style.display = "none";
+      }
+
+      buyers.forEach((buyer, index) => {
+        const status = buyer.approved ? "✅ Approved" : "⏳ Pending";
+        const paddyVarieties = (buyer.paddyList || [])
+          .map(p => `${p.variety}: ₹${p.price}`)
+          .join('<br>');
+
+        const row = `
+          <tr>
+            <td>${buyer.name}</td>
+            <td>${buyer.contact}</td>
+            <td>${buyer.location}</td>
+            <td>${paddyVarieties}</td>
+            <td>${status}</td>
+            <td class="actions">
+              <button class="approve" onclick="approveBuyer(${index})">Approve</button>
+              <button class="reject" onclick="rejectBuyer(${index})">Reject</button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function approveBuyer(index) {
+      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
+      buyers[index].approved = true;
+      localStorage.setItem("buyers", JSON.stringify(buyers));
+      loadBuyers();
+    }
+
+    function rejectBuyer(index) {
+      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
+      buyers.splice(index, 1);
+      localStorage.setItem("buyers", JSON.stringify(buyers));
+      loadBuyers();
+    }
+  </script>
+</body>
+</html>
