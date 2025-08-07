@@ -1,26 +1,13 @@
 [
   {
-    "name": "Rahul Traders",
-    "contact": "9876543210",
-    "location": "Nizamabad",
-    "commodity": "IR64 - ₹2150"
-  },
-  {
-    "name": "Suresh Agencies",
-    "contact": "9012345678",
-    "location": "Warangal",
-    "commodity": "Sonamasuri - ₹2600"
-  },
-  {
-    "name": "GreenPaddy Exports",
-    "contact": "9123456780",
-    "location": "Karimnagar",
-    "commodity": "BPT - ₹2400"
-  },
-  {
-    "name": "TruHarvest Pvt Ltd",
-    "contact": "9988776655",
-    "location": "Adilabad",
-    "commodity": "IR64 - ₹2200"
+    "name": "Hussain Sab",
+    "contact": "9538041146",
+    "location": "Muddapur",
+    "paddyList": [
+      { "variety": "kaveri", "price": 1500 },
+      { "variety": "Sona Masoori", "price": 1800 },
+      { "variety": "RNR", "price": 2100 }
+    ]
   }
 ]
+
