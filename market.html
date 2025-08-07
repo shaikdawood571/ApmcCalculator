@@ -1,281 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Paddy Market Rates</title>
-  <link rel="icon" href="farmtech.png" type="image/x-icon">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Paddy Market - Traders Info</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0fdf4;
       margin: 0;
-      background: #f0f0f0;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
       padding: 20px;
-      background: #fff;
     }
 
-    h1, h2 {
+    h2 {
       text-align: center;
       color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    #lastUpdated {
+      text-align: center;
+      font-size: 13px;
+      color: #388e3c;
+      margin-bottom: 15px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin: 20px 0;
+      background-color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
     }
 
     th, td {
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: center;
+      padding: 12px;
+      border: 1px solid #c8e6c9;
+      text-align: left;
     }
 
     th {
-      background-color: #c8e6c9;
+      background-color: #a5d6a7;
+      color: #1b5e20;
     }
 
-    button {
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      margin: 10px 5px 10px 0;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    button:hover {
-      background-color: #1b5e20;
-    }
-
-    .form-container {
+    #formContainer {
       display: none;
-      background: #f1f8e9;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: 20px auto;
-      position: relative;
+      margin-top: 20px;
     }
 
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    input[type="text"], input[type="number"] {
-      padding: 8px;
-      width: 100%;
-      box-sizing: border-box;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    .variety-entry {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      align-items: center;
-    }
-
-    .variety-entry input {
-      flex: 1;
-    }
-
-    .remove-btn {
-      background: #d32f2f;
+    .form-toggle-btn {
+      display: block;
+      margin: 0 auto 20px;
+      padding: 10px 15px;
+      background-color: #43a047;
       color: white;
       border: none;
-      padding: 5px 10px;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
+      font-weight: bold;
     }
 
-    .close-btn {
-      position: absolute;
-      top: 10px;
+    .form-toggle-btn:hover {
+      background-color: #2e7d32;
+    }
+
+    .float-buttons {
+      position: fixed;
+      top: 15px;
       right: 15px;
-      background: #b71c1c;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 3px;
-      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
     }
 
-    .back-btn {
-      margin-bottom: 10px;
-      display: inline-block;
+    .float-buttons button {
+      padding: 8px 12px;
+      font-size: 14px;
+      background-color: #66bb6a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .float-buttons button:hover {
+      background-color: #388e3c;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      .float-buttons button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+      .form-toggle-btn {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <button class="back-btn" onclick="location.href='index.html'">← Back to Home</button>
-    <h1>🌾 Paddy Market Rates & Traders</h1>
-    <p id="lastUpdated" style="text-align:right; font-size:11px; color:gray; margin-top:10px;"></p>
-    <button onclick="loadApprovedBuyers()">🔄</button> 
-    <h2>Current Buyers</h2>
-    
-  
-    <table id="rateTable">
-      <thead>
-        <tr>
-          <th>Trader Name</th>
-          <th>Contact</th>
-          <th>Location</th>
-          <th>Varieties & Prices</th>
-        </tr>
-      </thead>
-      <tbody id="rateBody"></tbody>
-    </table>
 
-    <div style="background-color: #fffde7; border-left: 6px solid #fbc02d; padding: 16px; margin-top: 40px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); font-size: 18px; color: #555;">
-      💼 <strong>Want to Trade?</strong> Submit your interest below to become a <strong>verified trader</strong>. Our team will review and approve genuine submissions.
-    </div>
+  <div class="float-buttons">
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+    <button onclick="loadTraders()">🔄 Refresh</button>
+  </div>
 
-    <button onclick="toggleForm()">+ Add New Trader</button>
+  <h2>🌾 Approved Paddy Traders</h2>
+  <div id="lastUpdated"></div>
 
-    <div id="buyerFormContainer" class="form-container">
-      <button class="close-btn" onclick="toggleForm()">X</button>
-      <h2>Add Buyer Information</h2>
-      <form id="buyerForm">
-        <div class="form-group">
-          <input type="text" id="name" placeholder="Buyer Name" required />
-        </div>
-        <div class="form-group">
-          <input type="text" id="contact" placeholder="Contact" required />
-        </div>
-        <div class="form-group">
-          <input type="text" id="location" placeholder="Location" required />
-        </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Trader Name</th>
+        <th>Contact</th>
+        <th>Location</th>
+        <th>Variety & Price</th>
+      </tr>
+    </thead>
+    <tbody id="marketBody">
+      <tr><td colspan="4">Loading trader data...</td></tr>
+    </tbody>
+  </table>
 
-        <label><strong>Interested Varieties:</strong></label>
-        <div id="varietyContainer">
-          <div class="variety-entry">
-            <input type="text" placeholder="Variety (e.g., IR64)" class="variety-name" required />
-            <input type="number" placeholder="Price (₹)" class="variety-price" required />
-          </div>
-        </div>
+  <div style="background-color: #e6f4ea; padding: 15px; border-left: 5px solid green; margin-bottom: 20px; border-radius: 5px;">
+  <h2 style="margin: 0; color: #2e7d32;">🌾 Want to Trade Online with Our Platform?</h2>
+  <p style="margin: 5px 0 0;">Submit your trading interest below — get approved and start connecting with farmers!</p>
+</div>
 
-        <button type="button" onclick="addVariety()">+ Add Variety</button>
-        <button type="submit">Submit for Approval</button>
-      </form>
-    </div>
+
+  <button class="form-toggle-btn" onclick="toggleForm()">➕ Add Trader (Form)</button>
+
+  <div id="formContainer">
+    <button class="form-toggle-btn" onclick="toggleForm()">✖ Close Form</button>
+    <iframe src="https://forms.gle/56Y6Wh1EK76FwkXy5"
+            width="100%" height="800" frameborder="0" marginheight="0" marginwidth="0">
+      Loading form…
+    </iframe>
   </div>
 
   <script>
-    function loadApprovedBuyers() {
-      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
-      const rateBody = document.getElementById("rateBody");
-      rateBody.innerHTML = "";
+    async function loadTraders() {
+      try {
+        const res = await fetch('tradersdata.json');
+        const buyers = await res.json();
 
-      const approved = buyers.filter(b => b.approved);
+        const tbody = document.getElementById("marketBody");
+        const updated = document.getElementById("lastUpdated");
 
-      if (approved.length === 0) {
-        rateBody.innerHTML = "<tr><td colspan='4'>No approved buyers yet.</td></tr>";
-        return;
+        tbody.innerHTML = "";
+
+        if (!buyers.length) {
+          tbody.innerHTML = `<tr><td colspan="4">No approved traders yet.</td></tr>`;
+        } else {
+          buyers.forEach(buyer => {
+            const paddyInfo = buyer.paddyList?.map(p => `${p.variety}: ₹${p.price}`).join('<br>') || '-';
+            tbody.innerHTML += `
+              <tr>
+                <td>${buyer.name}</td>
+                <td><a href="tel:${buyer.contact}">${buyer.contact}</a></td>
+                <td>${buyer.location}</td>
+                <td>${paddyInfo}</td>
+              </tr>
+            `;
+          });
+        }
+
+        const now = new Date();
+        updated.innerText = `Last updated: ${now.toLocaleString()}`;
+      } catch (err) {
+        console.error("Failed to load trader data:", err);
+        document.getElementById("marketBody").innerHTML = `<tr><td colspan="4">Failed to load trader data.</td></tr>`;
       }
-
-      approved.forEach(buyer => {
-        const varieties = (buyer.paddyList || []).map(p => `${p.variety}: ₹${p.price}`).join('<br>');
-        const row = `
-          <tr>
-            <td>${buyer.name}</td>
-            <td><a href="tel:${buyer.contact}">${buyer.contact}</a></td>
-            <td>${buyer.location}</td>
-            <td>${varieties}</td>
-          </tr>
-        `;
-        rateBody.innerHTML += row;
-      });
-    }
-
-    function addVariety() {
-      const container = document.getElementById("varietyContainer");
-      const entry = document.createElement("div");
-      entry.className = "variety-entry";
-      entry.innerHTML = `
-        <input type="text" placeholder="Variety" class="variety-name" required />
-        <input type="number" placeholder="Price (₹)" class="variety-price" required />
-        <button type="button" class="remove-btn" onclick="this.parentElement.remove()">❌</button>
-      `;
-      container.appendChild(entry);
     }
 
     function toggleForm() {
-      const form = document.getElementById("buyerFormContainer");
-      form.style.display = form.style.display === "none" || form.style.display === "" ? "block" : "none";
+      const formDiv = document.getElementById('formContainer');
+      formDiv.style.display = formDiv.style.display === 'none' ? 'block' : 'none';
     }
 
-    document.getElementById("buyerForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const name = document.getElementById("name").value.trim();
-      const contact = document.getElementById("contact").value.trim();
-      const location = document.getElementById("location").value.trim();
-
-      const varietyNames = document.querySelectorAll(".variety-name");
-      const varietyPrices = document.querySelectorAll(".variety-price");
-
-      const paddyList = [];
-
-      for (let i = 0; i < varietyNames.length; i++) {
-        const variety = varietyNames[i].value.trim();
-        const price = parseFloat(varietyPrices[i].value.trim());
-
-        if (variety && !isNaN(price)) {
-          paddyList.push({ variety, price });
-        }
-      }
-
-      if (paddyList.length === 0) {
-        alert("Please add at least one paddy variety with price.");
-        return;
-      }
-
-      const newBuyer = {
-        name,
-        contact,
-        location,
-        paddyList,
-        approved: false
-      };
-
-      const buyers = JSON.parse(localStorage.getItem("buyers") || "[]");
-      buyers.push(newBuyer);
-      localStorage.setItem("buyers", JSON.stringify(buyers));
-
-      alert("Buyer info submitted for admin approval.");
-      this.reset();
-      document.getElementById("varietyContainer").innerHTML = `
-        <div class="variety-entry">
-          <input type="text" placeholder="Variety" class="variety-name" required />
-          <input type="number" placeholder="Price (₹)" class="variety-price" required />
-        </div>
-      `;
-      toggleForm();
-    });
-
-function setTodayDate() {
-  const now = new Date();
-  const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  const dateStr = now.toLocaleDateString('en-IN', options);
-  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-
-  document.getElementById('lastUpdated').textContent = `📅 Last updated: ${dateStr}, ${timeStr}`;
-}
-
-  window.onload = function () {
-  loadApprovedBuyers();  // Load approved traders
-  setTodayDate();        // Set today's date on the page
-};
-
+    // Initial load
+    loadTraders();
   </script>
+
 </body>
 </html>
-
