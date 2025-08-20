@@ -14,15 +14,26 @@
       padding: 15px;
     }
 
-    .invoice-box {
-      background: rgb(255, 255, 255);
-      max-width: 800px;
-      margin: auto;
-      padding: 25px 20px 100px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      position: relative; /* ✅ Needed for corner label positioning */
-    }
+  .invoice-box {
+    background: #fff;
+    max-width: 800px;
+    margin: auto;
+    padding: 25px 20px 30px;   /* ✅ smaller padding */
+    margin-bottom: 50px;       /* ✅ ensures space at bottom */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  .invoice-box {
+  page-break-inside: avoid;
+}
+.invoice-details p {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}
+
+
 
     h2 {
       text-align: center;
@@ -92,6 +103,8 @@
         width: 100%;
         margin: 10px 0;
       }
+      
+
     }
   </style>
 </head>
@@ -120,12 +133,14 @@
   <div class="buttons">
     <button onclick="downloadPDF()">Download PDF</button>
     <button onclick="window.print()">Print</button>
-    <button onclick="goHome()">Back to Home</button>
     <button onclick="shareInvoice()">Share</button>
+    <button class="back-btn" onclick="goHome()">⬅ Back to Home</button>
+    
   </div>
 
+  
   <script>
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);  
     const totalBags = params.get('bags') || '---';
     const netWeight = params.get('weight') || '---';
     const price = params.get('price') || '---';
@@ -137,13 +152,24 @@
     const customerAddress = params.get('address') || '---';
     const ProductType = params.get('ProductType') || '---';
     const Enterprise = params.get('Enterprise') || '***';
-    const weighBridge = params.get('weigh') || '0.00';
-    const laborCharges = params.get('labor') || '0.00';
+    const weighBridge = params.get('weighBridge') || 0;
+    const laborCharges = params.get('laborCharges') || 0;
+    const commission = params.get('commission') || 0;
+    const amountPaid = params.get('amountPaid') || 0;
     const weightPerBag = params.get('wpb') || '0.00';
+
+// ✅ Get date (from URL or fallback to today)
+let selectedDate = params.get("billDate");
+if (!selectedDate) {
+  const today = new Date();
+  selectedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD
+}
+const formattedDate = new Date(selectedDate).toLocaleDateString();
+
 
     const content = `
       <div style="display: flex; gap: 350px;">
-      <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+      <p><strong>Date:</strong> ${formattedDate}</p>
       <p><strong>Enterprise:</strong> ${Enterprise}</p>
       </div>
       <hr>
@@ -153,6 +179,8 @@
       <p><strong>Product Type:</strong> ${ProductType}</p>
       <p><strong>Weigh Bridge Charges:</strong> ₹${weighBridge}</p>
       <p><strong>Labor Charges:</strong> ₹${laborCharges}</p>
+      <p><strong>Commission:</strong> ₹${commission}</p>
+      <p><strong>Amount Paid/jama:</strong> ₹${amountPaid}</p>
       <hr>
       <p><strong>Total Bags:</strong> ${totalBags}</p>
       <p><strong>Net Weight:</strong> ${netWeight} kg</p>
@@ -170,20 +198,26 @@
     const cornerLabel = document.getElementById('cornerLabel');
     cornerLabel.innerText = `FarmTech Solutions\n${invoiceNumber}`;
 
-    function downloadPDF() {
-      const invoice = document.getElementById("invoice");
-      cornerLabel.style.display = 'block';
+function downloadPDF() {
+  const invoice = document.getElementById("invoice");
+  cornerLabel.style.display = 'block';
 
+  document.fonts.ready.then(() => {
+    setTimeout(() => {
       html2pdf().from(invoice).set({
         margin: 10,
         filename: `${invoiceNumber}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+        html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, // ✅ scroll fix
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }   // ✅ avoid cut
       }).save().then(() => {
         cornerLabel.style.display = 'none';
       });
-    }
+    }, 300); // ✅ wait ~0.3s to ensure layout
+  });
+}
+
 
     function goHome() {
       if (window.opener) {
@@ -193,41 +227,48 @@
       }
     }
 
-    async function shareInvoice() {
-      const invoiceElement = document.getElementById('invoice');
+async function shareInvoice() {
+  const invoiceElement = document.getElementById('invoice');
+  cornerLabel.style.display = 'block'; // ✅ show label before export
 
-      const opt = {
-        margin: [0.5, 0.5, 0.5, 0.5],
-        filename: 'invoice.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      };
+  const opt = {
+    margin: [0.5, 0.5, 0.5, 0.5],
+    filename: 'invoice.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, // ✅ fixed
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }   // ✅ prevent cuts
+  };
 
-      try {
-        const pdfBlob = await html2pdf().set(opt).from(invoiceElement).outputPdf('blob');
-        const pdfFile = new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
+  try {
+    await document.fonts.ready;              // ✅ wait for fonts
+    await new Promise(r => setTimeout(r, 300)); // ✅ wait for layout
 
-        if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-          await navigator.share({
-            files: [pdfFile],
-            title: 'APMC Paddy Sale Invoice',
-            text: 'Attached is the full invoice from FarmTech.'
-          });
-          alert('Invoice shared successfully!');
-        } else {
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(pdfBlob);
-          link.download = 'invoice.pdf';
-          link.click();
-          alert('Sharing not supported. PDF downloaded instead.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while generating or sharing the PDF.');
-      }
+    const pdfBlob = await html2pdf().set(opt).from(invoiceElement).outputPdf('blob');
+    const pdfFile = new File([pdfBlob], 'invoice.pdf', { type: 'application/pdf' });
+
+    if (navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+      await navigator.share({
+        files: [pdfFile],
+        title: 'APMC Paddy Sale Invoice',
+        text: 'Attached is the full invoice from FarmTech.'
+      });
+      alert('Invoice shared successfully!');
+    } else {
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(pdfBlob);
+      link.download = 'invoice.pdf';
+      link.click();
+      alert('Sharing not supported. PDF downloaded instead.');
     }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred while generating or sharing the PDF.');
+  } finally {
+    cornerLabel.style.display = 'none'; // ✅ hide label after
+  }
+}
+
   </script>
 
 </body>
