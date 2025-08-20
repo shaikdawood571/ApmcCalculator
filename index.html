@@ -15,193 +15,211 @@
   <div class="slide-message msg2">🌾 Visit our online market to get <strong>best price</strong> for your <strong>paddy</strong>.</div>
 </div>
 
+<div class="container py-5">
+  <div class="card shadow mx-auto" style="max-width: 500px;">
+    <div class="card-body">
+      <h4 class="text-center mb-4">APMC Calculator-Billing</h4>
 
+      <!-- Basic Inputs -->
+      <div class="mb-3">
+        <label for="totalBags" class="form-label">Total Bags</label>
+        <input type="number" class="form-control" id="totalBags" placeholder="Enter total bags">
+      </div>
 
+      <div class="mb-3">
+        <label for="netWeight" class="form-label">Net Weight (kg)</label>
+        <input type="number" class="form-control" id="netWeight" placeholder="Enter net weight">
+      </div>
 
+      <div class="mb-3">
+        <label for="price" class="form-label">Price per Bag</label>
+        <input type="number" class="form-control" id="price" placeholder="Enter price per bag">
+      </div>
 
-  <div class="container py-5">
-    <div class="card shadow mx-auto" style="max-width: 500px;">
-      <div class="card-body">
-        <h4 class="text-center mb-4">APMC Calculator-Billing</h4>
+      <div class="mb-3">
+        <label for="myDropdown" class="form-label">Soot Deduction (kg)</label>
+        <select class="form-select" id="myDropdown">
+          <option value="">-- Select Soot --</option>
+          <option value="0">0 kg</option>
+          <option value="1">1 kg</option>
+          <option value="1.5">1.5 kg</option>
+          <option value="2">2 kg</option>
+          <option value="2.5">2.5 kg</option>
+          <option value="3">3 kg</option>
+          <option value="3.5">3.5 kg</option>
+          <option value="4">4 kg</option>
+          <option value="4.5">4.5 kg</option>
+          <option value="5">5 kg</option>
+        </select>
+      </div>
+
+      <div class="d-flex justify-content-between mb-4">
+        <button class="btn btn-primary w-50 me-2" onclick="calculateAmount()">Submit</button>
+        <button class="btn btn-secondary w-50 ms-2" onclick="clearFields()">Clear</button>
+      </div>
+
+      <div id="resultBox" class="alert alert-success d-none">
+        <strong>Net Amount:</strong> ₹<span id="NetAmount">0</span>
+      </div>
+
+      <!-- Customer + Deduction Fields -->
+      <div id="customerFields" class="d-none">
+        <h6 class="mt-4 border-bottom pb-2">Customer Details (Optional)</h6>
 
         <div class="mb-3">
-          <label for="totalBags" class="form-label">Total Bags</label>
-          <input type="number" class="form-control" id="totalBags" placeholder="Enter total bags">
+          <label for="customerName" class="form-label">Customer Name</label>
+          <input type="text" class="form-control" id="customerName" placeholder="Enter customer name (optional)">
+        </div>
+        
+        <div class="mb-3">
+          <label for="billDate" class="form-label">Bill Date</label>
+          <input type="date" class="form-control" id="billDate">
+        </div>
+
+    
+
+        <div class="mb-3">
+          <label for="customerContact" class="form-label">Contact Number</label>
+          <input type="text" class="form-control" id="customerContact" placeholder="Enter contact number (optional)">
         </div>
 
         <div class="mb-3">
-          <label for="netWeight" class="form-label">Net Weight (kg)</label>
-          <input type="number" class="form-control" id="netWeight" placeholder="Enter net weight">
+          <label for="customerAddress" class="form-label">Address</label>
+          <input type="text" class="form-control" id="customerAddress" placeholder="Enter address (optional)">
         </div>
 
         <div class="mb-3">
-          <label for="price" class="form-label">Price per Bag</label>
-          <input type="number" class="form-control" id="price" placeholder="Enter price per bag">
+          <label for="ProductType" class="form-label">Product Type</label>
+          <input type="text" class="form-control" id="ProductType" placeholder="Enter Product Type (optional)">
         </div>
 
         <div class="mb-3">
-          <label for="myDropdown" class="form-label">Soot Deduction (kg)</label>
-          <select class="form-select" id="myDropdown">
-            <option value="">-- Select Soot --</option>
-            <option value="0">0 kg</option>
-            <option value="1">1 kg</option>
-            <option value="1.5">1.5 kg</option>
-            <option value="2">2 kg</option>
-            <option value="2.5">2.5 kg</option>
-            <option value="3">3 kg</option>
-            <option value="3.5">3.5 kg</option>
-            <option value="4">4 kg</option>
-            <option value="4.5">4.5 kg</option>
-            <option value="5">5 kg</option>
-          </select>
+          <label for="Enterprise" class="form-label">Enterprise Name</label>
+          <input type="text" class="form-control" id="Enterprise" placeholder="Enter Enterprise (optional)">
         </div>
 
-        <div class="d-flex justify-content-between mb-4">
-          <button class="btn btn-primary w-50 me-2" onclick="calculateAmount()">Submit</button>
-          <button class="btn btn-secondary w-50 ms-2" onclick="clearFields()">Clear</button>
+        <!-- Deductions Section with Collapsible Dropdown -->
+        <div class="mb-3">
+          <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#deductionsSection" aria-expanded="false" aria-controls="deductionsSection">
+          ⚖️ Add Deductions
+        </button>
         </div>
 
-        <div id="resultBox" class="alert alert-success d-none">
-          <strong>Net Amount:</strong> ₹<span id="NetAmount">0</span>
+        <div class="collapse" id="deductionsSection">
+        <div class="card card-body shadow-sm border-primary mb-3">
+        <div class="mb-3">
+          <label for="weighBridge" class="form-label">Weigh Bridge (₹)</label>
+          <input type="number" class="form-control" id="weighBridge" placeholder="Enter Weigh Bridge Charge">
+        </div>
+        <div class="mb-3">
+          <label for="laborCharges" class="form-label">Labor Charges (₹)</label>
+          <input type="number" class="form-control" id="laborCharges" placeholder="Enter Labor Charges">
+        </div>
+        <div class="mb-3">
+          <label for="commission" class="form-label">Commission (₹)</label>
+          <input type="number" class="form-control" id="commission" placeholder="Enter Commission">
         </div>
 
-        <div id="customerFields" class="d-none">
-          <h6 class="mt-4 border-bottom pb-2">Customer Details (Optional)</h6>
-
-          <div class="mb-3">
-            <label for="customerName" class="form-label">Customer Name</label>
-            <input type="text" class="form-control" id="customerName" placeholder="Enter customer name (optional)">
-          </div>
-
-          <div class="mb-3">
-            <label for="customerContact" class="form-label">Contact Number</label>
-            <input type="text" class="form-control" id="customerContact" placeholder="Enter contact number (optional)">
-          </div>
-
-          <div class="mb-3">
-            <label for="customerAddress" class="form-label">Address</label>
-            <input type="text" class="form-control" id="customerAddress" placeholder="Enter address (optional)">
-          </div>
-
-          <div class="mb-3">
-            <label for="ProductType" class="form-label">Product Type</label>
-            <input type="text" class="form-control" id="ProductType" placeholder="Enter Product Type (optional)">
-          </div>
-
-          <div class="mb-3">
-            <label for="Enterprise" class="form-label">Enterprise Name</label>
-            <input type="text" class="form-control" id="Enterprise" placeholder="Enter Enterprise (optional)">
-          </div>
-              
-          <div class="mb-3">
-          <label for="weighBridge" class="form-label">Weigh Bridge Amount (optional)</label>
-          <input type="number" class="form-control" id="weighBridge" placeholder="e.g. 100">
-          </div>
-
-          <div class="mb-3">
-          <label for="laborCharges" class="form-label">Labor Charges (optional)</label>
-          <input type="number" class="form-control" id="laborCharges" placeholder="e.g. 200">
-          </div>
-
-          <button class="btn btn-success w-95" onclick="generateBill()">Generate Bill</button>
+        <div class="mb-3">
+          <label for="amountPaid" class="form-label">Amount Paid/jama (₹)</label>
+          <input type="number" class="form-control" id="amountPaid" placeholder="Enter Paid Amount">
         </div>
 
       </div>
     </div>
+
+        <button class="btn btn-success w-100 mt-3" onclick="generateBill()">Generate Bill</button>
+      </div>
+    </div>
   </div>
+</div>
 
-  <script>
-    let calculatedAmount = 0;
+<script>
+  let calculatedAmount = 0;
 
-    function calculateAmount() {
-      const bags = document.getElementById("totalBags").value.trim();
-      const weight = document.getElementById("netWeight").value.trim();
-      const price = document.getElementById("price").value.trim();
-      const soot = document.getElementById("myDropdown").value.trim();
-
-      if (!bags || !weight || !price || !soot) {
-        alert("Please enter all product details.");
-        return;
-      }
-
-      const netFinalWeight = parseFloat(weight) - (parseFloat(soot) * parseFloat(bags));
-      calculatedAmount = (netFinalWeight / 75) * parseFloat(price);
-
-      document.getElementById("NetAmount").textContent = calculatedAmount.toFixed(2);
-
-      document.getElementById("resultBox").classList.remove("d-none");
-      document.getElementById("customerFields").classList.remove("d-none");
-    }
-
-    function clearFields() {
-      const fields = ["totalBags", "netWeight", "price", "myDropdown", "customerName", "customerContact", "customerAddress"];
-      fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (el.tagName === "SELECT") {
-          el.selectedIndex = 0;
-        } else {
-          el.value = "";
-        }
-      });
-
-      document.getElementById("resultBox").classList.add("d-none");
-      document.getElementById("customerFields").classList.add("d-none");
-      document.getElementById("NetAmount").textContent = "0";
-    }
-
-  function generateBill() {
+  function calculateAmount() {
     const bags = document.getElementById("totalBags").value.trim();
     const weight = document.getElementById("netWeight").value.trim();
     const price = document.getElementById("price").value.trim();
     const soot = document.getElementById("myDropdown").value.trim();
-    const name = document.getElementById("customerName").value.trim();
-    const contact = document.getElementById("customerContact").value.trim();
-    const address = document.getElementById("customerAddress").value.trim();
-    const ProductType = document.getElementById("ProductType").value.trim();
-    const Enterprise = document.getElementById("Enterprise").value.trim();
-    const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent);
-    const weighBridge = parseFloat(document.getElementById("weighBridge").value) || 0;
-    const laborCharges = parseFloat(document.getElementById("laborCharges").value) || 0;
 
     if (!bags || !weight || !price || !soot) {
-      alert("Please enter all product details before generating the bill.");
+      alert("Please enter all product details.");
       return;
     }
 
-    const finalAmount = calculatedAmount - weighBridge - laborCharges;
+    const netFinalWeight = parseFloat(weight) - (parseFloat(soot) * parseFloat(bags));
+    calculatedAmount = (netFinalWeight / 75) * parseFloat(price);
 
-    // ✅ Calculate weight per bag safely
-    let weightPerBag = 0;
-    if (parseFloat(bags) > 0 && !isNaN(parseFloat(weight))) {
-      weightPerBag = parseFloat(weight) / parseFloat(bags);
-    }
+    document.getElementById("NetAmount").textContent = calculatedAmount.toFixed(2);
 
-    // ✅ Include weightPerBag (wpb) in the URL
-    const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weigh=${encodeURIComponent(weighBridge)}&labor=${encodeURIComponent(laborCharges)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}`;
-    window.open(url, "_blank", "width=800,height=600");
+    document.getElementById("resultBox").classList.remove("d-none");
+    document.getElementById("customerFields").classList.remove("d-none");
   }
 
+  function clearFields() {
+    const fields = ["totalBags", "netWeight", "price", "myDropdown", "customerName", "customerContact", "customerAddress", "ProductType", "Enterprise", "weighBridge", "laborCharges", "commission"];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el.tagName === "SELECT") {
+        el.selectedIndex = 0;
+      } else {
+        el.value = "";
+      }
+    });
+
+    document.getElementById("resultBox").classList.add("d-none");
+    document.getElementById("customerFields").classList.add("d-none");
+    document.getElementById("NetAmount").textContent = "0";
+  }
+
+function generateBill() {
+  const bags = document.getElementById("totalBags").value.trim();
+  const weight = document.getElementById("netWeight").value.trim();
+  const price = document.getElementById("price").value.trim();
+  const soot = document.getElementById("myDropdown").value.trim();
+  const name = document.getElementById("customerName").value.trim();
+  const contact = document.getElementById("customerContact").value.trim();
+  const address = document.getElementById("customerAddress").value.trim();
+  const ProductType = document.getElementById("ProductType").value.trim();
+  const Enterprise = document.getElementById("Enterprise").value.trim();
+  const billDate = document.getElementById("billDate").value.trim();
+
+  const weighBridge = parseFloat(document.getElementById("weighBridge").value) || 0;
+  const laborCharges = parseFloat(document.getElementById("laborCharges").value) || 0;
+  const commission = parseFloat(document.getElementById("commission").value) || 0;
+  const amountPaid = parseFloat(document.getElementById("amountPaid").value) || 0;
+
+  const totalDeductions = weighBridge + laborCharges + commission + amountPaid;
+  const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent);
+  const finalAmount = calculatedAmount - totalDeductions;
+
+  let weightPerBag = 0;
+  if (parseFloat(bags) > 0 && !isNaN(parseFloat(weight))) {
+    weightPerBag = parseFloat(weight) / parseFloat(bags);
+  }
+
+  // ✅ send deductions separately instead of JSON
+  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weighBridge=${encodeURIComponent(weighBridge.toFixed(2))}&laborCharges=${encodeURIComponent(laborCharges.toFixed(2))}&commission=${encodeURIComponent(commission.toFixed(2))}&amountPaid=${encodeURIComponent(amountPaid.toFixed(2))}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}&billDate=${encodeURIComponent(billDate)}`;
+
+  window.open(url, "_blank", "width=800,height=600");
+}
+
+  
 
   const messages = document.querySelectorAll(".slide-message");
   let currentIndex = 0;
-
   function showNextMessage() {
-    messages.forEach((msg, idx) => {
-      msg.classList.remove("active");
-    });
-
+    messages.forEach((msg, idx) => msg.classList.remove("active"));
     messages[currentIndex].classList.add("active");
-
     currentIndex = (currentIndex + 1) % messages.length;
   }
-
-  showNextMessage(); // Show the first message immediately
-  setInterval(showNextMessage, 4000); // Switch every 4 seconds
+  showNextMessage();
+  setInterval(showNextMessage, 4000);
 </script>
 
-
 <div style="text-align: center; margin-top: 20px;">
-  <a href="market.html" target="_blank" style="
+  <a href="market.html" style="
     background-color: #2e7d32;
     color: white;
     padding: 12px 24px;
@@ -214,23 +232,18 @@
   </a>
 </div>
 
+<footer style="text-align: center; padding: 12px; margin-top: 40px; font-size: 14px; color: #555;"> 
+  <img src="farmtech.png" alt="FarmTech Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;">
+  © 2025 <strong>FarmTech Solutions</strong>
+  <div style="display: flex; gap: 30px;"></div>
+  <a href="Company.html" style="color: blue; text-decoration: none;">
+    Visit Our Site
+  </a>
+  <a href="admin.html" style="font-size: 14px; color: gray;">🔐 Admin Login</a>
+</footer>
 
-  <footer style="text-align: center; padding: 12px; margin-top: 40px; font-size: 14px; color: #555;"> 
-    <img src="farmtech.png" alt="FarmTech Logo" style="height: 30px; vertical-align: middle; margin-right: 8px;">
-    © 2025 <strong>FarmTech Solutions</strong>
-
-    
-    <div style="display: flex; gap: 30px;"></div>
-    <a href="Company.html" target="_blank" style="color: blue; text-decoration: none;">
-      Visit Our Site
-    </a>
-
-    <a href="admin.html" style="font-size: 14px; color: gray;">🔐 Admin Login</a>
-
-
-    </div>
-
-  </footer>
+<!-- Bootstrap JS (required for collapse, dropdowns, modals etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
