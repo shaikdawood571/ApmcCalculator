@@ -121,10 +121,38 @@
         </div>
 
         <div class="mb-3">
-          <label for="amountPaid" class="form-label">Amount Paid/jama (₹)</label>
+          <label for="amountPaid" class="form-label">Amount Paid / Jama (₹)</label>
           <input type="number" class="form-control" id="amountPaid" placeholder="Enter Paid Amount">
         </div>
 
+        <div class="mb-3">
+          <label class="form-label d-block">Payment Mode</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="cash" value="cash">
+          <label class="form-check-label" for="cash">Cash</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="neft" value="neft">
+          <label class="form-check-label" for="neft">NEFT</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="rtgs" value="rtgs">
+          <label class="form-check-label" for="rtgs">RTGS</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="upi" value="upi">
+          <label class="form-check-label" for="upi">UPI</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="cheque" value="cheque">
+          <label class="form-check-label" for="cheque">Cheque</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="paymentMode" id="other" value="other">
+          <label class="form-check-label" for="other">Other</label>
+        </div>
+
+        </div>
       </div>
     </div>
 
@@ -189,6 +217,8 @@ function generateBill() {
   const laborCharges = parseFloat(document.getElementById("laborCharges").value) || 0;
   const commission = parseFloat(document.getElementById("commission").value) || 0;
   const amountPaid = parseFloat(document.getElementById("amountPaid").value) || 0;
+  const paymentMode = document.querySelector('input[name="paymentMode"]:checked')?.value || "";
+
 
   const totalDeductions = weighBridge + laborCharges + commission + amountPaid;
   const calculatedAmount = parseFloat(document.getElementById("NetAmount").textContent);
@@ -200,7 +230,7 @@ function generateBill() {
   }
 
   // ✅ send deductions separately instead of JSON
-  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weighBridge=${encodeURIComponent(weighBridge.toFixed(2))}&laborCharges=${encodeURIComponent(laborCharges.toFixed(2))}&commission=${encodeURIComponent(commission.toFixed(2))}&amountPaid=${encodeURIComponent(amountPaid.toFixed(2))}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}&billDate=${encodeURIComponent(billDate)}`;
+  const url = `bill.html?bags=${encodeURIComponent(bags)}&weight=${encodeURIComponent(weight)}&price=${encodeURIComponent(price)}&soot=${encodeURIComponent(soot)}&amount=${encodeURIComponent(calculatedAmount.toFixed(2))}&name=${encodeURIComponent(name)}&contact=${encodeURIComponent(contact)}&ProductType=${encodeURIComponent(ProductType)}&Enterprise=${encodeURIComponent(Enterprise)}&address=${encodeURIComponent(address)}&weighBridge=${encodeURIComponent(weighBridge.toFixed(2))}&laborCharges=${encodeURIComponent(laborCharges.toFixed(2))}&commission=${encodeURIComponent(commission.toFixed(2))}&amountPaid=${encodeURIComponent(amountPaid.toFixed(2))}&paymentMode=${encodeURIComponent(paymentMode)}&wpb=${encodeURIComponent(weightPerBag.toFixed(2))}&finalAmount=${encodeURIComponent(finalAmount.toFixed(2))}&billDate=${encodeURIComponent(billDate)}`;
 
   window.open(url, "_blank", "width=800,height=600");
 }
