@@ -177,18 +177,19 @@ const formattedDate = new Date(selectedDate).toLocaleDateString();
       <p><strong>Customer Name:</strong> ${customerName}</p>
       <p><strong>Contact:</strong> ${customerContact}</p>
       <p><strong>Address:</strong> ${customerAddress}</p>
-      <p><strong>Product Type:</strong> ${ProductType}</p>
-      <p><strong>Weigh Bridge Charges:</strong> ₹${weighBridge}</p>
-      <p><strong>Labor Charges:</strong> ₹${laborCharges}</p>
-      <p><strong>Commission:</strong> ₹${commission}</p>
-      <p><strong>Amount Paid/jama:</strong> ₹${amountPaid}</p>
-      <p><strong>Payment Mode:</strong> ${paymentMode}</p>
       <hr>
+      <p><strong>Product Type:</strong> ${ProductType}</p>
       <p><strong>Total Bags:</strong> ${totalBags}</p>
       <p><strong>Net Weight:</strong> ${netWeight} kg</p>
       <p><strong>Weight per Bag:</strong> ${weightPerBag} kg</p>
       <p><strong>Price per Bag:</strong> ₹${price}</p>
       <p><strong>Soot Deduction:</strong> ${soot} kg</p>
+      <hr>
+      <p><strong>Weigh Bridge Charges:</strong> ₹${weighBridge}</p>
+      <p><strong>Labor Charges:</strong> ₹${laborCharges}</p>
+      <p><strong>Commission:</strong> ₹${commission}</p>
+      <p><strong>Amount Paid/jama:</strong> ₹${amountPaid}</p>
+      <p><strong>Payment Mode:</strong> ${paymentMode}</p>
       <p class="total"><strong>Net Amount:</strong> ₹${amount}</p>
       <p class="total"><strong>Net Final Amount:</strong> ₹${finalAmount}</p>
     `;
@@ -275,3 +276,4 @@ async function shareInvoice() {
 
 </body>
 </html>
+
